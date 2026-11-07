@@ -15,3 +15,6 @@ Swift · SwiftUI · macOS, organized into Models, Views, State and Persistence l
 
 ## Run it
 Open `IdolStudio.xcodeproj` in Xcode and press **Run**.
+
+## License
+MIT. Free to use, change and share. See [LICENSE](LICENSE).
