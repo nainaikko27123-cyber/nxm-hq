@@ -268,6 +268,8 @@ struct AutoFitGrid: Layout {
 
     private func columnCount(width: CGFloat, items: Int) -> Int {
         guard items > 0 else { return 1 }
+        // An unlimited (or broken) width proposal means "as wide as you like": one row.
+        guard width.isFinite, width > 0 else { return items }
         let fit = max(1, Int((width + spacing) / (minColumnWidth + spacing)))
         if items <= fit { return items }                  // all in one row, stretched to full width
         let rows = Int((Double(items) / Double(fit)).rounded(.up))
@@ -286,7 +288,8 @@ struct AutoFitGrid: Layout {
     }
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let width = proposal.width ?? (minColumnWidth * CGFloat(max(subviews.count, 1)))
+        let ideal = minColumnWidth * CGFloat(max(subviews.count, 1)) + spacing * CGFloat(max(subviews.count - 1, 0))
+        let width = proposal.width.flatMap { $0.isFinite ? $0 : nil } ?? ideal
         let m = metrics(width: width, subviews: subviews)
         let height = m.rowHeights.reduce(0, +) + spacing * CGFloat(max(m.rowHeights.count - 1, 0))
         return CGSize(width: width, height: height)
